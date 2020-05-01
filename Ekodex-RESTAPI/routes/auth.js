@@ -6,7 +6,6 @@ const { registerValidation, loginValidation } = require('../validation');
 
 // Register user.
 router.post('/register', async (req, res) => {
-
     // Validate data before we create a user.
     const {error} = registerValidation(req.body);
     if (error) 
@@ -15,7 +14,10 @@ router.post('/register', async (req, res) => {
     // Check if user is already in the database.
     const emailExists = await User.findOne({ email: req.body.email });
     if (emailExists)
-        return res.status(400).send('Email already exists.');
+        return res.status(400).send({error: 'An account with this email already exists.'});
+    const usernameExists = await User.findOne({username: req.body.username});
+    if (usernameExists)
+        return res.status(400).send({error: 'An account with this username already exists.'});
 
     // Hash the password.
     const salt = await bcrypt.genSalt(10);
@@ -24,6 +26,7 @@ router.post('/register', async (req, res) => {
     // Create a new user.
     const user = new User({
         name: req.body.name,
+        username: req.body.username,
         email: req.body.email,
         password: hashedPassword
     });
@@ -46,16 +49,16 @@ router.post('/login', async (req, res) => {
     // Check if user email exists.
     const user = await User.findOne({ email: req.body.email });
     if (!user)
-        return res.status(400).send('Email or password does not match any existing records.');
+        return res.status(400).send({error: 'Email or password does not match any existing records.'});
     
     // Check if password is correct.
     const validPass = await bcrypt.compare(req.body.password, user.password);
     if (!validPass)
-        return res.status(400).send('Email or password does not match any existing records.');
+        return res.status(400).send({error: 'Email or password does not match any existing records.'});
 
     // Create and assign a token
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send(token);
+    res.header('auth-token', token).send({token: token});
 });
 
 module.exports = router;

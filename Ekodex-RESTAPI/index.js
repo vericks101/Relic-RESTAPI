@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const app = express();
 
 // Import Routes
@@ -17,11 +18,12 @@ mongoose.connect(
 );
 
 // Middlewares
+app.use(cors());
 app.use(express.json());
 
 // Route Middlewares
 app.use('/api/user', authRoute);
 app.use('/api/posts', postRoute);
 
-const port = 3000
+const port = 3001
 app.listen(port, () => console.log('Server is up and running on port ' + port + '.'));
