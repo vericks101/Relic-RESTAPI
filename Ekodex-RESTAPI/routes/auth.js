@@ -46,15 +46,15 @@ router.post('/login', async (req, res) => {
     if (error) 
         return res.status(400).send(error.details[0].message);
 
-    // Check if user email exists.
-    const user = await User.findOne({ email: req.body.email });
+    // Check if user exists.
+    const user = await User.findOne({ username: req.body.username });
     if (!user)
-        return res.status(400).send({error: 'Email or password does not match any existing records.'});
+        return res.status(400).send({error: 'Username or password does not match any existing records.'});
     
     // Check if password is correct.
     const validPass = await bcrypt.compare(req.body.password, user.password);
     if (!validPass)
-        return res.status(400).send({error: 'Email or password does not match any existing records.'});
+        return res.status(400).send({error: 'Username or password does not match any existing records.'});
 
     // Create and assign a token
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
