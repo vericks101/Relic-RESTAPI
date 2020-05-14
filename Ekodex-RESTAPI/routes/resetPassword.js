@@ -6,7 +6,7 @@ router.post('/', (req, res) => {
     User.findOne({
         resetPasswordToken: req.body.resetPasswordToken
     }).then(user => {
-        if (user === null) {
+        if (user === null || new Date(user.resetPasswordExpires) < new Date()) {
             res.status(400).send('password reset link is invalid or has expired.');
         } else {
             res.status(200).send({

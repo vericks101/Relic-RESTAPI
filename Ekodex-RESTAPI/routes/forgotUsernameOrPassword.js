@@ -15,7 +15,10 @@ router.post('/', (req, res) => {
         } else {
             const token = crypto.randomBytes(20).toString('hex');
 
-            user.resetPasswordExpires = Date.now() + 3600000;
+            // Set reset timeout to an hour from now.
+            var dt = new Date();
+            dt.setHours(dt.getHours() + 1);
+            user.resetPasswordExpires = dt;
             user.resetPasswordToken = token;
             await user.save();
 
@@ -32,7 +35,8 @@ router.post('/', (req, res) => {
                 to: `${user.email}`,
                 subject: 'Link to Reset Password',
                 text:
-                    'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n'
+                    'You are receiving this because you (or someone else) have requested the username and or reset of the password for your account.\n\n'
+                    + 'Your username is: ' + `${user.username}` + '\n\n'
                     + 'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n'
                     + `http://localhost:3000/reset/${token}\n\n`
                     + 'If you did not request this, please ignore this email and your password will remain unchanged.\n',
