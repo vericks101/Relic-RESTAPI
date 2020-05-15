@@ -21,6 +21,8 @@ mongoose.connect(
     () => console.log('Connected to the database.')
 );
 
+mongoose.connection.on('error', function(){console.log('test')});
+
 // Middlewares
 app.use(cors());
 app.use(express.json());
