@@ -38,7 +38,7 @@ router.post('/', (req, res) => {
                     'You are receiving this because you (or someone else) have requested the username and or reset of the password for your account.\n\n'
                     + 'Your username is: ' + `${user.username}` + '\n\n'
                     + 'Please click on the following link, or paste this into your browser to complete the process:\n\n'
-                    + `http://localhost:3000/reset/${token}\n\n`
+                    + `https://ekodex.netlify.app/reset/${token}\n\n`
                     + 'Please take note that this link will expire after some time.\n\n'
                     + 'If you did not request this, please ignore this email and your password will remain unchanged.\n',
             };

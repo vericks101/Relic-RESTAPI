@@ -59,7 +59,7 @@ router.post('/register', async (req, res) => {
             text:
                 'You are receiving this because you have registered a new Ekodex account under this email.\n\n'
                 + 'Please click on the following link, or paste this into your browser to verify your account:\n\n'
-                + `http://localhost:3000/verify/${token}\n`
+                + `https://ekodex.netlify.app/verify/${token}\n`
         };
 
         transporter.sendMail(mailOptions, (err, response) => {
