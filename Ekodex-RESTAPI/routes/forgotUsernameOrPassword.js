@@ -11,7 +11,7 @@ router.post('/', (req, res) => {
         email: req.body.email 
     }).then(async (user) => {
         if (user === null) {
-            res.status(403).send('email not in db.');
+            res.status(400).send({error: 'An account with this email does not exist.'});
         } else {
             const token = crypto.randomBytes(20).toString('hex');
 
