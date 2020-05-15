@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
         return res.status(400).send(error.details[0].message);
 
     // Check if user exists.
-    console.log(red.body);
+    console.log(req.body);
     const user = await User.findOne({ username: req.body.username });
     if (!user)
         return res.status(400).send({error: 'Username or password does not match any existing records.'});
