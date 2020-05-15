@@ -33,5 +33,5 @@ app.use('/api/reset', resetRoute);
 app.use('/api/resetPasswordViaUsername', resetViaUsername);
 app.use('/api/verify', verifyEmail);
 
-const port = 3001
+const port = process.env.PORT || 3001;
 app.listen(port, () => console.log('Server is up and running on port ' + port + '.'));
