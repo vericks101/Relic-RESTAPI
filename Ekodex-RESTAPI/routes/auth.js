@@ -1,8 +1,12 @@
 const router = require('express').Router();
+const crypto = require('crypto');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { registerValidation, loginValidation } = require('../validation');
+const nodemailer = require('nodemailer');
+
+require('dotenv').config();
 
 // Register user.
 router.post('/register', async (req, res) => {
@@ -23,19 +27,52 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
+    // Create a verification token.
+    const token = crypto.randomBytes(20).toString('hex');
+
     // Create a new user.
     const user = new User({
         name: req.body.name,
         username: req.body.username,
         email: req.body.email,
-        password: hashedPassword
+        password: hashedPassword,
+        verificationToken: token,
     });
 
     // Save the new user.
     try {
         await user.save();
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: `${process.env.EMAIL_ADDRESS}`,
+                pass: `${process.env.EMAIL_PASSWORD}`,
+            },
+        });
+
+        console.log(user.email);
+        const mailOptions = {
+            from: 'noreplyekodex@gmail.com',
+            to: `${user.email}`,
+            subject: 'Link to Verify Email',
+            text:
+                'You are receiving this because you have registered a new Ekodex account under this email.\n\n'
+                + 'Please click on the following link, or paste this into your browser to verify your account:\n\n'
+                + `http://localhost:3000/verify/${token}\n`
+        };
+
+        transporter.sendMail(mailOptions, (err, response) => {
+            if (err) {
+                res.status(400).send(err);
+            } else {
+                res.status(200).json('verification email sent.');
+            }
+        });
+
         res.send({ user: user._id });
-    } catch(err) {
+    } catch(err) {1
+        console.log(err);
         res.status(400).send(err);
     }
 });
@@ -59,7 +96,7 @@ router.post('/login', async (req, res) => {
 
     // Create and assign a token
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send({token: token});
+    res.header('auth-token', token).send({token: token, verified: user.verified});
 });
 
 module.exports = router;

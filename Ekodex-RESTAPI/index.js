@@ -10,6 +10,7 @@ const postRoute = require('./routes/posts');
 const forgotRoute = require('./routes/forgotUsernameOrPassword');
 const resetRoute = require('./routes/resetPassword');
 const resetViaUsername = require('./routes/resetPasswordViaUsername');
+const verifyEmail = require('./routes/verifyEmail');
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use('/api/posts', postRoute);
 app.use('/api/forgotusernameorpassword', forgotRoute);
 app.use('/api/reset', resetRoute);
 app.use('/api/resetPasswordViaUsername', resetViaUsername);
+app.use('/api/verify', verifyEmail);
 
 const port = 3001
 app.listen(port, () => console.log('Server is up and running on port ' + port + '.'));
