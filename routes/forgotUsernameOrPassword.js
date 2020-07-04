@@ -22,6 +22,7 @@ router.post('/', (req, res) => {
             user.resetPasswordToken = token;
             await user.save();
 
+            // Utilize nodemailer to send a forgot username or password email.
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
@@ -43,7 +44,7 @@ router.post('/', (req, res) => {
                     + 'If you did not request this, please ignore this email and your password will remain unchanged.\n',
             };
 
-            transporter.sendMail(mailOptions, (err, response) => {
+            transporter.sendMail(mailOptions, (err) => {
                 if (err) {
                     res.status(400).send(err);
                 } else {
