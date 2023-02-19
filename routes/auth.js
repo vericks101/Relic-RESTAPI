@@ -56,13 +56,13 @@ router.post('/register', async (req, res) => {
         });
 
         const mailOptions = {
-            from: 'noreplyekodex@gmail.com',
+            from: 'noreplyrelic@gmail.com',
             to: `${user.email}`,
             subject: 'Link to Verify Email',
             text:
-                'You are receiving this because you have registered a new Ekodex account under this email.\n\n'
+                'You are receiving this because you have registered a new relic account under this email.\n\n'
                 + 'Please click on the following link, or paste this into your browser to verify your account:\n\n'
-                + `https://ekodex.netlify.app/verify/${token}\n`
+                + `https://relic.netlify.app/verify/${token}\n`
         };
 
         transporter.sendMail(mailOptions, (err, response) => {
